@@ -3,23 +3,24 @@ import './App.css'
 
 function App() {
   useEffect(() => {
-      const result = oktell.connect({
-          url: '127.0.0.1:4059',
-          login: 'y.zhazitov',
-          oktellVoice: true,
-          password: 'NtV7ubiJ',
-          callback: function(data) {
-              if ( data.result ) {
-                  console.log(result);
-              }
-          }
-      })
-      // const call = async () => {
-      //     const result = await fetch('http://127.0.0.1:4059/callto?number=87479012100')
-      //     console.log(result);
-      // }
-      //
-      // call().then(res => console.log(res))
+      const socket = new WebSocket('ws://phone.tha.kz')
+
+      socket.onopen = () => {
+          // WebSocket is connected, send the user data
+          socket.send(JSON.stringify({
+              login: 'y.zhazitov',
+              oktellVoice: true,
+              password: 'NtV7ubiJ'
+          }));
+      };
+
+      socket.onmessage = (event) => {
+          console.log(event)
+          // Handle incoming WebSocket data
+          const data = JSON.parse(event.data);
+          
+          console.log(data.result);
+      };
       
   }, [])
   return (

@@ -1,31 +1,37 @@
-import {useEffect} from "react"
 import './App.css'
+import axios from 'axios'
 
 function App() {
-  useEffect(() => {
-      const socket = new WebSocket('ws://phone.tha.kz')
 
-      socket.onopen = () => {
-          // WebSocket is connected, send the user data
-          socket.send(JSON.stringify({
-              login: 'y.zhazitov',
-              oktellVoice: true,
-              password: 'NtV7ubiJ'
-          }));
-      };
+    const call = async () => {
+        await fetch('http://127.0.0.1:4059/callto?number=87479012100')
+        const result = await fetch('http://127.0.0.1:4059/getcurrentcallinfo')
+        console.log('decline: ' + result )
+    }
+    
+    const decline = async () => {
+        const result = await fetch('http://127.0.0.1:4059/disconnectcall')
+        console.log('decline: ' + result )
+    }
 
-      socket.onmessage = (event) => {
-          console.log(event)
-          // Handle incoming WebSocket data
-          const data = JSON.parse(event.data);
-          
-          console.log(data.result);
-      };
-      
-  }, [])
+    const getInfo = async () => {
+        const result = axios.get('http://127.0.0.1:4059/getcurrentcallinfo', {
+            "Content-Type": "application/xml; charset=utf-8"
+        }).then(res => console.log(res)).catch(error => console.log(error))
+        console.log('decline: ' + result )
+    }
+
+    const focus = async () => {
+        const result = await fetch('http://127.0.0.1:4059/focus')
+        console.log('decline: ' + result )
+    }
+
   return (
     <div>
-        
+        <button onClick={() => call()}>Call</button>
+        <button onClick={() => decline()}>Decline</button>
+        <button onClick={() => getInfo()}>Info</button>
+        <button onClick={() => focus()}>Focus</button>
     </div>
   )
 }
